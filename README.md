@@ -1,10 +1,14 @@
 # Spec-Driven Development Skill
 
+[English](#english) | [中文](#中文)
+
 ## English
 
-A Codex skill for running a gated Spec-Driven Development (SDD) workflow. It
-helps an agent move from a project idea to feature decomposition, requirements,
-planning, task breakdown, implementation, and spec-traced testing.
+[Jump to 中文](#中文)
+
+A reusable AI skill for creating specs from a structured project development
+workflow. It helps an agent move from a project idea to feature decomposition,
+requirements, planning, task breakdown, implementation, and spec-traced testing.
 
 This skill is designed around one principle: the specification is the source of
 truth. Each step produces or updates durable documents so another AI agent or
@@ -17,6 +21,7 @@ human contributor can continue the work without relying on hidden context.
 |-- README.md
 |-- LICENSE
 |-- .gitignore
+|-- .gitattributes
 `-- spec-driven-development/
     |-- SKILL.md
     |-- references/
@@ -45,16 +50,15 @@ human contributor can continue the work without relying on hidden context.
   step.
 - `spec-driven-development/templates/` - reusable document templates generated
   during the workflow.
+- `.gitattributes` - keeps text files normalized with LF line endings.
 - `.gitignore` - excludes local generated artifacts such as `.specify/`, caches,
   logs, and environment files.
 - `LICENSE` - MIT license.
 
 ### Attribution
 
-Some workflow concepts are inspired by
-[github/spec-kit](https://github.com/github/spec-kit). This project is an
-independent Codex skill adaptation and is not affiliated with or endorsed by
-GitHub.
+Some workflow concepts reference
+[github/spec-kit](https://github.com/github/spec-kit).
 
 ### License
 
@@ -64,10 +68,11 @@ MIT. See [LICENSE](LICENSE).
 
 ## 中文
 
-這是一個給 Codex 使用的 Spec-Driven Development（SDD，規格驅動開發）
-skill。它會引導 agent 從專案想法開始，依序完成 Feature 拆解、需求規格、
-澄清、檢查清單、技術規劃、交叉分析、任務拆解、實作，以及根據規格追蹤的
-測試驗證。
+[跳轉至 English](#english)
+
+這是一個可重用的 AI skill，用於根據結構化專案開發流程製作 spec。它會引導
+agent 從專案想法開始，依序完成 Feature 拆解、需求規格、澄清、檢查清單、
+技術規劃、交叉分析、任務拆解、實作，以及根據規格追蹤的測試驗證。
 
 這個 skill 的核心原則是：規格文件是唯一真相來源。每個步驟都會產生或更新
 可保存的文件，讓另一個 AI agent 或人類開發者可以接手，而不必依賴隱藏在
@@ -80,6 +85,7 @@ skill。它會引導 agent 從專案想法開始，依序完成 Feature 拆解�
 |-- README.md
 |-- LICENSE
 |-- .gitignore
+|-- .gitattributes
 `-- spec-driven-development/
     |-- SKILL.md
     |-- references/
@@ -106,14 +112,13 @@ skill。它會引導 agent 從專案想法開始，依序完成 Feature 拆解�
   gate 規則。
 - `spec-driven-development/references/` - 每個 SDD 步驟的詳細操作說明。
 - `spec-driven-development/templates/` - 工作流中會使用到的文件模板。
+- `.gitattributes` - 將文字檔換行統一為 LF。
 - `.gitignore` - 排除 `.specify/`、快取、log、環境變數檔等本機產物。
 - `LICENSE` - MIT 授權。
 
 ### 概念來源
 
-部分工作流概念參考自
-[github/spec-kit](https://github.com/github/spec-kit)。本專案是獨立的
-Codex skill adaptation，並非 GitHub 官方專案，也未受 GitHub 背書。
+部分工作流概念參考自 [github/spec-kit](https://github.com/github/spec-kit)。
 
 ### 授權
 
