@@ -88,7 +88,7 @@ A failing test means one of three things - determine which before acting:
 
 1. **Implementation bug** -> fix the code, re-verify
 2. **Test is wrong** -> fix the test logic, re-verify
-3. **Spec was ambiguous** -> update `spec.md` to clarify, get user approval, then fix implementation or test accordingly
+3. **Spec was ambiguous** -> stop and get user approval before changing approved requirements, then fix implementation or test accordingly
 
 Never mark a failing test as done without user approval. Every failing test against a spec criterion is a real defect.
 
@@ -171,3 +171,20 @@ The feature is NOT complete. Choose how to proceed:
 ```
 
 The Feature is only complete when `test-report.md` shows 0 failing tests and `epic.md` is updated to [PASS].
+
+## Final Explanation
+
+When the active requested scope is complete, create or update `.specify/final-explanation.md` in the user's language.
+
+- If this is a single Feature request, explain that Feature.
+- If this completes the last Feature in the project, explain the whole project.
+- If more Features remain, note the completed Feature and the next pending Feature, but do not claim the whole project is complete.
+
+Include:
+- What was completed
+- How to use or run it
+- Important project/module structure
+- Test result summary
+- Known limitations or deferred scope
+
+**Mode rule:** In detailed mode, wait at this final gate. In auto mode, stop here and report the final result before starting the next Feature. Do not begin another Feature without user direction.

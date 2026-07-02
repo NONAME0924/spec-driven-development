@@ -5,6 +5,8 @@ Decompose the user's project idea into a structured set of Features. Each Featur
 
 This prevents the "giant spec.md" problem - where everything gets crammed into one document and becomes unmanageable.
 
+In Goal Mode, Step 0 is the launch point for a project-wide spec pack. After `epic.md` is created, do not start implementing Feature 001. Instead, run Goal Mode's Spec Sweep: create `spec.md` for every Feature first, then align the full spec pack before planning or implementing.
+
 ---
 
 ## Two Modes
@@ -178,10 +180,13 @@ Complete 008, 009.
 | [TESTING] Testing | Currently in Step 9 |
 | [PASS] Complete | All 9 steps done, all tests passing |
 | [BLOCKED] Blocked | Waiting on a dependency Feature to complete |
+| [DEFERRED] Deferred | Intentionally moved out of current Goal Mode execution |
 
 ---
 
 ## Gate
+
+Step 0 is the mode-selection gate. After showing `epic.md`, always ask the user which execution mode to use. Do not continue into Step 1, Step 2, Spec Sweep, planning, or implementation until the user chooses a mode.
 
 ### Init Mode Gate
 
@@ -195,7 +200,9 @@ Output: Output: .specify/epic.md
    Features identified: [N] across [M] phases
 
 Review: Please review the feature breakdown. When ready:
-  - "continue" or "next" -> begin Feature 001, starting at Step 1
+  - "goal mode" -> write all Feature specs first, align the spec pack, then batch plan/execute automatically
+  - "auto mode" -> begin Feature 001; Step 2/3 are the main approval gates, then continue automatically
+  - "detailed mode" -> begin Feature 001 and pause for approval at every step
   - "revise [what]" -> adjust the breakdown before starting
   - "split [feature ID]" -> break a feature into smaller pieces
   - "merge [feature IDs]" -> combine features that are too small
@@ -221,7 +228,9 @@ Dependencies: Dependency changes: [list any new or changed dependencies]
 WARNING:  Features already [PASS] Complete or [IN PROGRESS] In Progress were NOT modified.
 
 Review: When ready:
-  - "continue" -> resume the current active Feature
+  - "goal mode" -> run project-wide Spec Sweep from the current epic
+  - "auto mode" -> resume/start one Feature; Step 2/3 are the main approval gates, then continue automatically
+  - "detailed mode" -> resume/start one Feature and pause for approval at every step
   - "start [feature ID]" -> jump to a specific Feature
   - "revise [what]" -> adjust further before continuing
   - "stop" -> pause here

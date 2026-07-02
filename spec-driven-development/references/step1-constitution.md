@@ -84,4 +84,4 @@ Review: Please review the output above. When ready, choose:
 ---
 ```
 
-**Do not proceed to Step 2 until the user responds.**
+**Mode rule:** In detailed mode, wait at this gate. In auto mode, continue to Step 2 automatically after creating or reusing `constitution.md`, unless the constitution introduces a process rule or approval boundary the user has not already accepted.

@@ -20,6 +20,8 @@ Work through the spec systematically. For each user story and requirement, check
 5. **Data lifecycle** - How is data created, modified, deleted, retained?
 6. **Concurrency** - What if two users act simultaneously?
 7. **Integration** - What external systems are touched?
+8. **Necessity** - Is this required for the current Feature, or is it future/nice-to-have?
+9. **Simpler default** - Can a standard behavior, native platform feature, existing module, or documented assumption avoid extra scope?
 
 ## Structured Clarification Process
 
@@ -38,6 +40,7 @@ Run through each user story and ask targeted questions. Present them as a number
 > 4. Is there a maximum number of photos per album?
 > 5. Can albums be shared publicly, or are they always private?
 > 6. What image formats must be supported?
+> 7. Is album sharing required in v1, or should it be deferred to a later Feature?
 >
 > Please answer as many as you can - for anything you're unsure about, I'll make a reasonable default assumption and note it in the spec."
 
@@ -65,6 +68,8 @@ For any question the user can't answer, make a reasonable assumption and record 
 - **AL-002:** Mobile-responsive but no native app required
 ```
 
+Prefer the smallest safe assumption: private before public, no admin override before admin requirement, existing account model before new roles, native/browser behavior before custom UI, synchronous flow before background jobs unless the spec requires scale or latency guarantees.
+
 ## Checklist Validation
 
 After clarification, validate the spec against this checklist and update `spec.md`:
@@ -76,6 +81,7 @@ After clarification, validate the spec against this checklist and update `spec.m
 - [x] Error states documented
 - [x] Permission model defined
 - [x] Data lifecycle clarified
+- [x] Future/nice-to-have scope moved to Non-Goals or Deferred
 - [ ] Performance targets confirmed <- still open
 ```
 

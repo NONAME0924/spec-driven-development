@@ -26,24 +26,66 @@
 
 ---
 
+## Project Structure
+
+```text
+src/
+|-- features/
+|   `-- [feature-name]/
+|       |-- ui/
+|       |-- api/
+|       |-- service/
+|       |-- data/
+|       `-- tests/
+|-- shared/
+|   |-- auth/
+|   |-- errors/
+|   `-- validation/
+`-- app/
+```
+
+Use the existing project layout when modifying an existing codebase. Do not invent a new layout unless the current project has no clear structure.
+
+---
+
+## Module Map
+
+| Module | Layer(s) | Owns | Key Files | Depends On | Requirements | Lean Check |
+|--------|----------|------|-----------|------------|--------------|------------|
+| [Feature] UI | Frontend | Screens, forms, user states | `src/features/[feature]/ui/*` | [Feature] API Client | US-NNN | Required by workflow; uses existing UI patterns |
+| [Feature] API | API | Routes/controllers, auth checks, validation | `src/features/[feature]/api/*` | [Feature] Service | US-NNN, FR-NNN | Required contract boundary |
+| [Feature] Service | Domain | Business rules and orchestration | `src/features/[feature]/service/*` | [Feature] Data | US-NNN | Keeps business logic out of controllers |
+| [Feature] Data | Data | Persistence model and queries | `src/features/[feature]/data/*` | Database | FR-NNN | Required only if persistent data changes |
+
+---
+
+## Workflow Map
+
+| Workflow | User Story | Modules Involved | Contract(s) | Data | Tests |
+|----------|------------|------------------|-------------|------|-------|
+| [Primary workflow] | US-NNN | UI -> API -> Service -> Data | `POST /api/...` | [Entity] | unit, integration, acceptance |
+
+---
+
 ## Tech Stack
 
-| Layer | Technology | Version | Rationale |
-|-------|-----------|---------|-----------|
-| Frontend | [e.g. React] | [18.x] | [Why this over alternatives] |
-| Styling | [e.g. Tailwind CSS] | [3.x] | |
-| Backend | [e.g. FastAPI] | [0.x] | |
-| Database | [e.g. PostgreSQL] | [16.x] | |
-| Auth | [e.g. JWT + bcrypt] | | |
-| File Storage | [e.g. S3] | | |
-| Hosting | [e.g. Vercel + Railway] | | |
-| Testing | [e.g. Vitest + Playwright] | | |
+| Layer | Technology | Version | Rationale | Lean Check |
+|-------|-----------|---------|-----------|------------|
+| Frontend | [e.g. React] | [18.x] | [Why this over alternatives] | Already in project / required by existing app |
+| Styling | [e.g. Tailwind CSS] | [3.x] | | Reuse existing styling system |
+| Backend | [e.g. FastAPI] | [0.x] | | Already in project / smallest fit |
+| Database | [e.g. PostgreSQL] | [16.x] | | Required by persistent data |
+| Auth | [e.g. existing auth module] | | | Reuse existing auth before adding new auth |
+| File Storage | [e.g. S3] | | | Include only if spec requires file persistence |
+| Hosting | [e.g. existing platform] | | | Reuse existing deployment target |
+| Testing | [e.g. Vitest + Playwright] | | | Use existing test stack |
 
 ---
 
 ## Component Breakdown
 
 ### [Component Name - e.g. AuthService]
+**Module:** [Module from Module Map]
 **Layer:** Service
 **Responsibility:** [Single sentence - what this component owns]
 **Key files:**
@@ -82,16 +124,28 @@
 
 ## API Design
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | /api/auth/login | None | Authenticate user |
-| POST | /api/auth/register | None | Create account |
-| GET | /api/albums | Required | List user's albums |
-| POST | /api/albums | Required | Create album |
-| GET | /api/albums/:id | Required | Get album detail |
-| DELETE | /api/albums/:id | Required | Delete album |
+| Module | Method | Path | Auth | Input | Output | Errors | Description |
+|--------|--------|------|------|-------|--------|--------|-------------|
+| Auth API | POST | /api/auth/login | None | `{ email, password }` | `{ user, token }` | `400`, `401` | Authenticate user |
+| Auth API | POST | /api/auth/register | None | `{ email, password, name }` | `{ user, token }` | `400`, `409` | Create account |
+| Albums API | GET | /api/albums | Required | Query: `{ page, limit }` | `{ items, page, total }` | `401` | List user's albums |
+| Albums API | POST | /api/albums | Required | `{ title, description? }` | `{ album }` | `400`, `401` | Create album |
+| Albums API | GET | /api/albums/:id | Required | Path: `{ id }` | `{ album }` | `401`, `403`, `404` | Get album detail |
+| Albums API | DELETE | /api/albums/:id | Required | Path: `{ id }` | `{ success: true }` | `401`, `403`, `404` | Delete album |
 
 See `contracts/api-spec.json` for full request/response schemas.
+
+---
+
+## Workflow Stage Contracts
+
+| Workflow | Stage | Module | Input | Output | State Change | Failure Output |
+|----------|-------|--------|-------|--------|--------------|----------------|
+| Create album | Frontend submit | Albums UI | Form values | Validated payload | None | Field errors |
+| Create album | API handler | Albums API | JSON request + auth context | Service command | Request logged | HTTP error body |
+| Create album | Service | Albums Service | Command object | Domain result | Business state updated | Domain error |
+| Create album | Repository | Albums Data | Persistence DTO | Stored record | Database row written | Storage error |
+| Create album | Response | Albums API | Domain result | HTTP response body | None | Standard error body |
 
 ---
 
@@ -150,8 +204,16 @@ Tools that must be available in the development environment:
 
 ## Review Checklist
 - [ ] Every user story has a corresponding component/endpoint
+- [ ] Project Structure shows where code will live
+- [ ] Module Map groups responsibilities by domain/layer
+- [ ] Every module has a current requirement/workflow and a clear reason to exist
+- [ ] Workflow Map ties user stories to modules, contracts, data, and tests
 - [ ] Data model covers all entities in the spec
+- [ ] No speculative module, dependency, service, abstraction, or config exists only for future flexibility
+- [ ] Existing codebase patterns, native features, stdlib, and already-installed dependencies were checked before adding new custom code/dependencies
 - [ ] Security model addresses all sensitive data
+- [ ] API/input/output contracts define schemas, status codes, validation rules, and error bodies
+- [ ] Important workflow stages define input, output, state change, and failure output
 - [ ] Error handling strategy defined
 - [ ] No over-engineering (each component justified by a requirement)
 - [ ] Plan is consistent with `constitution.md`

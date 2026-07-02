@@ -3,7 +3,7 @@
 ## Purpose
 Audit the quality of `spec.md` **before entering technical planning**. The checklist acts like "unit tests for English" - it catches vague, unmeasurable, or missing requirements that would cause expensive rework during implementation.
 
-**This step is a hard gate before Plan.** Any [FAIL] items must be resolved by updating `spec.md` before proceeding to Step 5.
+Any [FAIL] items must be resolved by updating `spec.md` before proceeding to Step 5, unless the user explicitly accepts the risk. In auto mode, resolve clear checklist failures directly when they can be handled by applying the approved Step 2/3 requirements or by recording a conservative assumption.
 
 ## When to Run
 - After Step 3 (Clarify) is complete
@@ -56,6 +56,9 @@ Read through the entire `spec.md` and evaluate every user story, acceptance crit
 - Are all external integrations identified?
 - Are data formats and protocols specified?
 - Are authentication requirements for each endpoint stated?
+- For every endpoint, command, event, or workflow stage, are inputs and outputs explicitly defined?
+- Are request/response schemas, required fields, optional fields, validation rules, and error formats specified?
+- Are stage transitions clear: what enters the stage, what it produces, and what state changes happen?
 
 **Security:**
 - Is authentication and authorisation explicitly defined?
@@ -65,6 +68,13 @@ Read through the entire `spec.md` and evaluate every user story, acceptance crit
 **Performance:**
 - Are response time targets specified with percentile (p95, p99)?
 - Are throughput and scalability targets defined?
+
+**Lean SDD / Anti-Overengineering:**
+- Does every requirement trace to a user story, goal, or risk?
+- Are future-only features moved to Non-Goals or Deferred?
+- Are there speculative settings, roles, dashboards, integrations, or extension points?
+- Could an existing module, native platform feature, standard library, or already-installed dependency satisfy the need?
+- Are there modules, APIs, data entities, or tasks that exist only "for later"?
 
 ---
 
@@ -160,10 +170,48 @@ Create `.specify/specs/NNN-feature-name/checklists/` and produce these files:
 ## Data Formats
 - [x] Request/response format mentioned (JSON)
 - [ ] [FAIL] File upload format not specified (multipart? base64?)
+- [ ] [FAIL] POST /api/albums input schema not specified (required fields, optional fields, validation)
+- [ ] [FAIL] POST /api/albums response schema not specified (success body, status code, error body)
+- [ ] [FAIL] Album creation workflow stages do not define inputs/outputs (frontend form -> API -> service -> repository -> response)
 
 ## Issues to Resolve
 1. [ ] Add pagination requirement to album list
 2. [ ] Specify file upload format
+3. [ ] Define input/output schema for each endpoint or stage
+4. [ ] Define standard error response format
+```
+
+### `checklists/minimalism.md` - Lean SDD quality
+
+```markdown
+# Minimalism Checklist
+**Feature:** NNN-feature-name
+**Audited:** YYYY-MM-DD
+
+## Scope
+- [x] Every Must requirement traces to a user story or goal
+- [ ] [FAIL] FR-008 export dashboard has no current user story; move to Deferred or a later Feature
+- [x] Nice-to-have sharing controls are listed under Non-Goals
+
+## Architecture
+- [x] Every module has a workflow and requirement
+- [ ] [FAIL] NotificationAdapter has one caller and no external integration requirement; inline or defer
+- [ ] [FAIL] AbstractRepository has one implementation; use concrete repository until a second implementation exists
+
+## Dependencies / Platform
+- [x] Existing auth module reused
+- [ ] [FAIL] New date picker dependency requested; native date input satisfies the requirement
+- [ ] [FAIL] Custom CSV parser proposed; standard library or existing dependency can handle it
+
+## Tasks
+- [x] Every task maps to a module/workflow/contract
+- [ ] [FAIL] T-014 "prepare plugin architecture" is scaffolding for later; delete
+
+## Issues to Resolve
+1. [ ] Move unowned requirements to Non-Goals / Deferred
+2. [ ] Remove or merge modules with no current workflow
+3. [ ] Replace custom/dependency work with native, stdlib, existing code, or already-installed dependency where sufficient
+4. [ ] Delete tasks that do not trace to approved scope
 ```
 
 ---
@@ -179,7 +227,7 @@ For each [FAIL] item:
 
 ## Gate
 
-Show all checklist files to the user. Count [FAIL] items remaining. Then output:
+Show or summarize all checklist files. Count [FAIL] items remaining. Then output:
 
 ```
 ---
@@ -190,6 +238,7 @@ Output: Output:
   - .specify/specs/NNN-feature-name/checklists/ux.md
   - .specify/specs/NNN-feature-name/checklists/security.md
   - .specify/specs/NNN-feature-name/checklists/api.md
+  - .specify/specs/NNN-feature-name/checklists/minimalism.md
 
 WARNING:  Issues found: [N] items marked [FAIL]
 
@@ -211,4 +260,4 @@ Review: When ready, choose:
 ---
 ```
 
-**Special rule:** If there are unresolved [FAIL] items and the user types "continue", remind them of the open issues and ask for explicit confirmation before proceeding. This gate is a quality checkpoint, not a formality.
+**Mode rule:** In detailed mode, wait at this gate. In auto mode, continue to Step 5 automatically when N = 0. If N > 0 and the issue requires a user decision, stop and ask for approval or clarification; otherwise resolve it in `spec.md`, update the checklist, and continue.
