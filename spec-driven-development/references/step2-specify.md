@@ -1,140 +1,27 @@
 # Step 2 - Specify
 
-## Purpose
-Transform the current Feature's scope (as defined in `epic.md`) into a structured specification with user stories and functional requirements. Focus entirely on **what** the system should do and **why** - never **how**.
+**Input:** Feature scope from `epic.md`, shared constraints, existing behavior, user requirements.
+**Output:** `.specify/specs/NNN-feature-name/spec.md`.
+**Completion:** Required behavior is bounded and has observable acceptance criteria.
+**Gate:** Use [Modes and Gates](../SKILL.md#modes-and-gates); Goal does not wait here.
 
-Scope discipline is critical: this spec covers only the current Feature. If anything belongs to another Feature in `epic.md`, note it as out of scope and reference the correct Feature ID.
+Use the [spec template](../templates/spec-template.md). Capture what the user needs
+and why, including relevant failure paths, permissions, and data lifecycle.
+Record known technical constraints without prematurely designing the solution.
 
-Lean SDD applies here: specify the smallest correct v1 scope. Do not include speculative settings, roles, integrations, admin tools, dashboards, abstractions, or "future flexibility" unless the current Feature's user story requires them.
+Give acceptance criteria stable IDs such as `AC-001`. There is no minimum count:
+cover the actual behavior without padding. Use Feature-qualified IDs for cross-feature
+references. Avoid duplicating the same requirement as both a story and a separate FR
+unless the separate rule adds clarity.
 
----
+Infer behavior necessary to make the requested workflow complete, but mark consequential
+inferences as assumptions. Do not expand a login request into unrelated admin systems
+or integrations. Preserve all requested functionality; put speculative additions in
+Non-Goals or Deferred with a reason.
 
-## What to Ask the User
+For existing projects, distinguish changed behavior from behavior to preserve.
+Describe important external inputs and observable outputs at the requirements level;
+technical schemas and internal stage contracts are designed in Step 5.
 
-Ask the user to describe the Feature in detail:
-- What should it do?
-- Who uses it?
-- What does success look like?
-- Are there any edge cases they already know about?
-- What is explicitly not needed for v1?
-- Which requested ideas are nice-to-have or future work rather than required now?
-
-If the user has already described this in Step 0, use that as a starting point and ask only for clarification.
-
----
-
-## Processing the User's Input
-
-1. **Extract** - identify all distinct behaviours, actors, and workflows mentioned
-2. **Expand** - infer logical consequences (e.g. "login" implies "logout", "session expiry")
-3. **Lean prune** - remove speculative behaviours, options, settings, integrations, and future-proofing that are not required for the current Feature
-4. **Scope check** - verify everything belongs to this Feature; move anything that doesn't to Non-Goals, Open Questions, or the correct Feature
-5. **Structure** - organise into user stories and requirements using the template below
-
----
-
-## Create the Feature Directory
-
-Create `.specify/specs/NNN-feature-name/` if it does not already exist.
-
----
-
-## Output: `spec.md`
-
-Create `.specify/specs/NNN-feature-name/spec.md` using `templates/spec-template.md`:
-
-```markdown
-# Feature Specification: [Feature Name]
-**Feature ID:** NNN-feature-name
-**Status:** Draft
-**Created:** YYYY-MM-DD
-
-## Overview
-[1-2 paragraph summary of what this feature is and why it exists]
-
-## Problem Statement
-[The problem this feature solves for users]
-
-## Goals
-- [Measurable goal 1]
-- [Measurable goal 2]
-
-## Non-Goals (Out of Scope)
-- [Explicitly excluded - reference the Feature that handles it where relevant]
-- [Lean SDD: future/nice-to-have behavior intentionally not included in this Feature]
-
-## User Roles
-| Role | Description |
-|------|-------------|
-| [Role] | [Who they are and what they do] |
-
-## User Stories
-
-### US-001: [Story Title]
-**As a** [role]
-**I want to** [action]
-**So that** [benefit]
-
-**Acceptance Criteria:**
-- [ ] [Specific, testable criterion]
-- [ ] [Error state criterion]
-- [ ] [Edge case criterion]
-
-## Functional Requirements
-
-### FR-001: [Requirement Name]
-**Priority:** Must / Should / Could / Won't
-**Description:** [Unambiguous description]
-
-## Non-Functional Requirements
-| Category | Requirement |
-|----------|-------------|
-| Performance | [e.g. Responds in < 2s] |
-| Accessibility | [e.g. WCAG 2.1 AA] |
-| Security | [e.g. All data encrypted at rest] |
-
-## Assumptions
-- [Things assumed true but not yet confirmed]
-
-## Deferred / Later
-- [Ideas intentionally deferred because they are not required for this Feature]
-
-## Open Questions
-- [ ] [Unresolved question]
-
-## Review & Acceptance Checklist
-- [ ] All user roles identified
-- [ ] Each user story has clear acceptance criteria
-- [ ] All functional requirements are unambiguous
-- [ ] Non-functional requirements specified
-- [ ] Out-of-scope items explicitly listed
-- [ ] Speculative or future-only items moved to Non-Goals / Deferred
-- [ ] No technology assumptions made
-```
-
----
-
-## Update `epic.md`
-
-After creating `spec.md`, update the Active Feature line in `epic.md` and set this Feature's status to [IN PROGRESS] In Progress.
-
----
-
-## Gate
-
-Show the completed `spec.md` to the user, then output:
-
-```
----
-[PASS] Step 2 - Specify complete  (Feature: NNN-feature-name)
-
-Output: Output: .specify/specs/NNN-feature-name/spec.md
-
-Review: Please review the spec above. When ready:
-  - "continue" or "next" -> proceed to Step 3 (Clarify)
-  - "revise [what]" -> rework before moving on
-  - "stop" -> pause here; say "continue from Step 3" to resume
----
-```
-
-Do not proceed to Step 3 until the user responds.
+Update the Feature's state in `epic.md`. Present the reviewable spec at a required gate,
+otherwise continue to clarification under the selected mode.

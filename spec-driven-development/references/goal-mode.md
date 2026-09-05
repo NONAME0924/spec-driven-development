@@ -1,252 +1,105 @@
 # Goal Mode
 
-## Purpose
-Turn a broad project goal into a complete spec pack before planning or implementing. Goal Mode avoids local optimization: do not start building Feature 001 before the AI has seen the full set of Feature specs, dependencies, shared modules, contracts, and data needs.
+**Input:** Project outcome, Feature breakdown, resolved Step 0 gate, repository constraints.
+**Output:** Requested deliverables: aligned specs; blueprint and verified implementation
+when requested; user-language explanation.
+**Gate/authority:** [SKILL.md](../SKILL.md#modes-and-gates) is the shared policy.
 
-Use Goal Mode when the user wants the whole project handled automatically from a high-level goal, especially when the project has multiple Features whose APIs, data model, modules, or workflows may affect each other.
+## 1. Establish Scope
 
----
+Run or resume Step 0 using recorded state. After its gate, reuse/create the shared
+constitution once. Define the in-scope Feature set in `epic.md`.
+A Goal request authorizes routine product and technical choices within that scope,
+not silent removal of requested features or unrelated external actions.
 
-## Core Rule
+## 2. Complete the Spec Sweep
 
-Goal Mode is **spec-first across all Features, then build**:
+Run Step 2 and Step 3 for every in-scope Feature. Use repository evidence and documented
+assumptions; do not wait at individual Feature review gates in Goal.
+Independent specs can be drafted in parallel with common terms and disjoint file
+ownership. The parent agent owns cross-spec reconciliation.
 
-1. Step 0 creates or updates `epic.md`
-2. Run a Spec Sweep for every Feature: Step 2 + Step 3 only
-3. Run Cross-Spec Alignment across the whole spec pack
-4. Build a global project blueprint
-5. Execute Features in dependency order through Step 4 -> Step 9
+Complete every in-scope `spec.md` before producing technical plans, tasks, or code.
+Reuse valid specs; do not regenerate completed work. Update the spec pack as work progresses.
 
-Do not run Step 5, Step 7, or Step 8 for any Feature until the spec pack is complete and aligned.
+## 3. Align the Spec Pack
 
----
+Read the full set of in-scope specs and resolve conflicting boundaries, dependencies,
+terms, roles, shared entities, and cross-feature user journeys. Consolidate duplicated
+responsibilities and make shared concepts consistent. Resolve ordinary choices within
+scope; apply the shared decision policy for consequential unresolved questions.
 
-## Goal Mode Artifacts
-
-Create these project-level artifacts:
-
-```text
-.specify/
-|-- epic.md
-|-- spec-pack.md              <- all Features, status, assumptions, cross-spec decisions
-|-- project-blueprint.md      <- global Project Structure, Module Map, Workflow Map, shared contracts
-|-- final-explanation.md      <- user-language explanation after completion
-|-- specs/
-|   |-- 001-feature-name/
-|   |   `-- spec.md
-|   |-- 002-feature-name/
-|   |   `-- spec.md
-|   `-- ...
-```
-
-`spec-pack.md` is the project-level source of truth while Goal Mode is running.
-
----
-
-## Phase A - Goal Intake and Epic
-
-Run Step 0 normally, but optimize for the whole goal:
-
-- Capture the user's outcome, audience, constraints, and success definition
-- Split the goal into independently deliverable Features
-- Mark dependencies and delivery order
-- Apply Lean SDD: merge tiny Features, split giant Features, defer speculative scope
-
-In Goal Mode, Step 0 is the only normal gate. If the user explicitly asked for "fully automatic goal mode", proceed after Step 0 using reasonable assumptions unless a risk trigger appears.
-
----
-
-## Phase B - Spec Sweep
-
-For each Feature in `epic.md`, in dependency order:
-
-1. Create `.specify/specs/NNN-feature-name/spec.md`
-2. Run Step 2 - Specify
-3. Run Step 3 - Clarify using AI defaults where safe
-4. Record assumptions and deferred scope in the Feature spec
-5. Update `spec-pack.md`
-
-Goal Mode clarification policy:
-
-- Do not stop for ordinary product details. Make the smallest safe assumption and record it.
-- Ask the user only when the decision is high-impact, irreversible, security-sensitive, legal/compliance-sensitive, paid-service-related, or changes the core product direction.
-- Prefer private before public, existing roles before new roles, native/platform behavior before custom UI, synchronous flow before background jobs, and current Feature scope before future flexibility.
-
----
-
-## Phase C - Cross-Spec Alignment
-
-After all Feature specs exist, read every `spec.md` and audit the full spec pack.
-
-Check:
-
-- Feature boundaries: no duplicated or conflicting responsibilities
-- Dependencies: order is correct and no circular dependency exists
-- Shared concepts: terms, roles, permissions, entities, and states are consistent
-- API/data overlap: common contracts and entities are shared instead of duplicated
-- UX flow continuity: user journeys across Features make sense
-- Lean SDD: speculative scope is deferred, tiny Features are merged, overlarge Features are split
-
-Create or update `.specify/spec-pack.md`:
+Create `.specify/spec-pack.md` as an index, not a copy of every spec:
 
 ```markdown
-# Spec Pack: [Project Name]
-**Status:** Draft / Aligned / Executing / Complete
-**Last Updated:** YYYY-MM-DD
+# Spec Pack: [Project]
+**Status:** Draft / Aligned / Executing / Complete / Blocked
 
 ## Feature Specs
-| Feature | Spec | Status | Key Assumptions | Depends On |
-|---------|------|--------|-----------------|------------|
-| 001-feature | specs/001-feature/spec.md | Aligned | [summary] | - |
+| Feature | Spec Link | Status | Depends On | Material Assumptions |
+|---------|-----------|--------|------------|----------------------|
 
 ## Cross-Spec Decisions
-| ID | Decision | Applies To | Reason |
-|----|----------|------------|--------|
-| CSD-001 | Use one Account role model | 001, 003, 004 | Avoid duplicated permission concepts |
+| Decision | Affected Features | Basis | Canonical Definition |
+|----------|-------------------|-------|----------------------|
 
-## Shared Concepts
-- Roles:
-- Entities:
-- Workflows:
-- Contracts:
-
-## Conflicts Resolved
-- [Conflict] -> [Resolution]
-
-## Deferred Scope
-- [Deferred item] -> [Reason / later Feature]
+## Alignment
+[Boundary, terminology, dependency and cross-feature flow checks; unresolved blockers]
 
 ## Execution Order
-1. 001-feature
-2. 002-feature
+[Dependency order and safe parallel groups]
+
+## Deferred Scope
+[Items, reasons, and user scope decision when requested work is deferred]
 ```
 
----
+Mark Aligned only when all in-scope specs exist, dependency conflicts are resolved,
+and no blocker prevents coherent planning. Technical schemas are not required at this
+stage; capture shared behavioral expectations. Run Step 4 requirements review across
+the pack before global technical planning so that the blueprint uses reviewed specs.
 
-## Phase D - Global Project Blueprint
+For a specs-only request, stop after this review. Mark the requested documentation
+deliverable complete in execution state and spec-pack.md, while leaving implementation
+status uncompleted in epic.md. Write final-explanation.md with document-validation
+evidence and state that no implementation was requested. Phases 4-6 apply only to
+requested planning/implementation; a planning-only request ends after its requested
+planning artifacts and consistency checks.
 
-Before executing individual Features, create `.specify/project-blueprint.md`.
+## 4. Build the Global Blueprint
 
-This is the global version of Step 5's project shape:
+Create `.specify/project-blueprint.md` using Step 5's design criteria:
 
-```markdown
-# Project Blueprint: [Project Name]
-**Generated:** YYYY-MM-DD
+- Project Structure: actual repository paths and intended additions.
+- Global Module Map: owner, responsibility, affected Features, dependencies, justification.
+- Global Workflow Map: cross-feature journeys, modules, contracts, data, verification.
+- Shared definitions: canonical locations for contracts and data.
+- Execution plan: prerequisites, parallel write ownership, and integration checks.
 
-## Project Structure
-[repo-aware file/folder layout]
+Keep shared definitions in one place (existing code/schema location, or a suitable
+project-level contract/data artifact). Feature plans link to them and describe deltas.
 
-## Global Module Map
-| Module | Owns | Used By Features | Key Files | Depends On | Lean Check |
-|--------|------|------------------|-----------|------------|------------|
+## 5. Execute the Batch
 
-## Global Workflow Map
-| Workflow | Features | Modules | Contracts | Data | Tests |
-|----------|----------|---------|-----------|------|-------|
+For each dependency-ready Feature, finish Steps 5-9 using its reviewed spec and the
+global blueprint. Revisit Step 4 only if requirements changed. Step 6 validates
+completed technical schemas; Step 7 groups tasks by real owners and workflows.
 
-## Shared Data Model
-| Entity | Owning Module | Used By Features | Notes |
-|--------|---------------|------------------|-------|
+Parallel implementation is useful only with stable shared contracts, satisfied
+prerequisites, disjoint writes, and planned integration checks. A dependent Feature
+normally waits for its dependencies to PASS; a blueprint may explicitly allow earlier
+parallel work against a stable contract, with final integration still required.
 
-## Shared Contracts
-| Contract | Type | Used By Features | Notes |
-|----------|------|------------------|-------|
+If later evidence changes a shared assumption, update the affected specs and spec pack,
+reconcile their dependencies, then refresh impacted plans/checks before resuming affected
+implementation. Do not restart unrelated Features or bypass a new alignment blocker.
 
-## Execution Plan
-| Order | Feature | Why Now | Blocks |
-|-------|---------|---------|--------|
-```
+## 6. Verify the Project
 
-Each Feature's later `plan.md`, `tasks.md`, contracts, and tests must map back to this blueprint.
+After Feature verification, check the assembled cross-feature workflows, shared data
+and contract compatibility, and project-required checks. Record this project evidence
+in `spec-pack.md` with commands/results or linked reports.
 
----
-
-## Phase E - Batch Execution
-
-Execute Features in the order from `spec-pack.md` / `project-blueprint.md`.
-
-For each Feature:
-
-1. Step 4 - Checklist
-2. Step 5 - Plan, using `project-blueprint.md` as the global parent
-3. Step 6 - Analyze
-4. Step 7 - Tasks
-5. Step 8 - Implement
-6. Step 9 - Test
-7. Mark the Feature [PASS] in `epic.md`
-
-Do not start a Feature if its dependencies are not [PASS], unless the plan explicitly supports parallel implementation without shared-state conflicts.
-
----
-
-## Risk Triggers
-
-Goal Mode is fully automatic except for these cases:
-
-- Paid service or new external dependency that was not already approved
-- Destructive migration, irreversible data operation, or broad public API change
-- Security, privacy, legal, compliance, or auth decision that cannot be safely assumed
-- Core product direction conflict across specs
-- Requirement conflict that cannot be resolved with a conservative assumption
-- Existing codebase architecture contradicts the generated project blueprint
-
-When a risk trigger appears, stop and ask one concise question, then resume the batch.
-
----
-
-## Completion
-
-Goal Mode completes when:
-
-- Every Feature in `epic.md` is [PASS], or explicitly [DEFERRED]
-- `spec-pack.md` is updated with final decisions
-- `project-blueprint.md` reflects the implemented structure
-- All Feature `test-report.md` files pass
-- `.specify/final-explanation.md` explains the completed project in the user's language
-
-Before the final report, create `.specify/final-explanation.md` in the user's language. This is not an internal trace; it is the explanation a user should read to understand what was built, how to use it, where the main parts live, what passed tests, and what was deferred.
-
-Template:
-
-```markdown
-# [Project Name] 說明
-
-## 完成內容
-[What the project now does]
-
-## 如何使用
-[How to run/open/use it]
-
-## 主要功能
-- [Feature and user value]
-
-## 專案結構
-[Important modules/files from project-blueprint.md]
-
-## 測試結果
-[Feature test reports and any tests that could not run]
-
-## 延後範圍
-[Deferred items from spec-pack.md]
-```
-
-Final report:
-
-```markdown
-[SUCCESS] Goal Mode complete
-
-Features:
-- [PASS] 001-feature
-- [PASS] 002-feature
-- [DEFERRED] 006-future-feature
-
-Artifacts:
-- .specify/spec-pack.md
-- .specify/project-blueprint.md
-- .specify/final-explanation.md
-- .specify/specs/*/test-report.md
-
-Notes:
-- [major decisions]
-- [deferred scope]
-```
+For an implementation request, complete only when all requested, non-deferred Features have current passing evidence
+and project integration passes. Record incomplete work as Blocked rather than Complete.
+Keep `epic.md` execution state and blueprint consistent with delivered code.
+Write the final user-language explanation according to [Completion](../SKILL.md#completion).

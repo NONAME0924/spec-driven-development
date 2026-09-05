@@ -1,190 +1,59 @@
-# Step 9 - Test
+# Step 9 - Verify
 
-## Purpose
-Write and verify tests that confirm the implementation satisfies every acceptance criterion in `spec.md`. The Feature is not complete until all tests pass.
+**Input:** Acceptance criteria, implemented changes, existing/new tests, execution environment.
+**Output:** `test-report.md`, accurate task/epic state, completion explanation when scope is done.
+**Completion:** Current in-scope criteria have passing evidence and required checks pass.
+**Gate:** Use [Modes and Gates](../SKILL.md#modes-and-gates).
 
-Tests in this step are spec-driven: each test traces directly to a user story or acceptance criterion. If it is in the spec, it must be tested. If a test fails, either the implementation is wrong or the spec needs updating - both require resolution before closing.
+## Evidence
 
----
+Map each acceptance criterion to appropriate evidence: an existing or new automated
+test, a reproducible manual check, or inspection for non-executable deliverables.
+Prefer automation for important behavior/regressions; do not write tests that merely
+mirror low-impact wording or file structure. One meaningful test can cover several ACs,
+and one AC may need several checks.
 
-## Pre-Conditions
+Run the project's required checks and the affected behavior checks. Broaden for shared
+behavior, changed contracts, or remaining uncertainty. Avoid rerunning unchanged checks
+that already passed on the current relevant state. Record actual commands, environment,
+outcomes, and evidence locations; never infer a pass from an unexecuted test.
 
-Before starting, verify:
-- [ ] Step 8 (Implement) is complete - all tasks in `tasks.md` marked `[DONE]`
-- [ ] The application works end-to-end without errors
-- [ ] `spec.md` is the final approved version with no open [FAIL] checklist items
-
----
-
-## Test Strategy
-
-### Map Every Acceptance Criterion to a Test
-
-Go through every user story in `spec.md` and map each acceptance criterion to at least one test:
-
-```
-US-001 AC-1: "User can log in with valid email and password"
-  -> test: valid credentials are accepted and a session is established
-  -> test: user is redirected to the correct page after login
-
-US-001 AC-2: "Invalid password shows error message"
-  -> test: wrong password is rejected with a clear error
-  -> test: the error message is visible to the user
-```
-
-### Test Layers
-
-Write tests at the appropriate layer for each criterion:
-
-| Layer | What it tests |
-|-------|--------------|
-| **Unit** | Individual functions and business logic in isolation |
-| **Integration** | How components work together (e.g. API + database) |
-| **Acceptance** | Full user flows from the user's perspective |
-
-Each acceptance criterion must have at least one test. Prefer the lowest layer that meaningfully validates the criterion.
-
----
-
-## Process
-
-### 1. Build the Coverage Map
-
-Before writing any tests, create the mapping in `test-report.md`:
+## Report Shape
 
 ```markdown
-## Coverage Map
+# Verification Report: [Feature]
+**Result:** PASS / FAIL / BLOCKED
+**Verified state:** [Commit if available, plus relevant uncommitted changes]
 
-| AC ID | Acceptance Criterion | Test Description | Layer | Status |
-|-------|---------------------|-----------------|-------|--------|
-| US-001 AC-1 | Valid credentials accepted | valid login succeeds | Integration | [TODO] |
-| US-001 AC-2 | Invalid password shows error | wrong password rejected | Integration | [TODO] |
-| US-002 AC-1 | User can create album | create album success | Integration | [TODO] |
+## Acceptance Evidence
+| AC | Check or Test | Evidence / Command | Result |
+|----|---------------|--------------------|--------|
+| AC-001 | [Observable behavior] | [Reproducible check] | PASS / FAIL / NOT RUN / BLOCKED |
+
+## Required Checks
+[Commands, outcomes, relevant environment and scope]
+
+## Limitations
+[Missing access, unavailable environments, unverified behavior, or none]
 ```
 
-### 2. Write the Tests
+NOT RUN and BLOCKED do not count as passing. An acceptable alternative verification
+method must establish the same criterion, not just make the report green. User approval
+does not transform a known failure into PASS.
 
-For each row in the coverage map, write a test that:
-- Sets up the required state (arrange)
-- Performs the action described in the acceptance criterion (act)
-- Asserts the outcome matches the criterion exactly (assert)
+## Resolution and Completion
 
-Write tests using whatever testing framework is specified in `plan.md`.
+Fix implementation or test defects within scope and rerun affected checks.
+For requirement ambiguity, apply the shared decision policy; record authorized scope
+changes explicitly. Do not wait for a new "fix all" instruction to repair normal defects.
 
-### 3. Verify All Tests Pass
+Update `epic.md` to PASS only for the verified current Feature. For Goal, also verify
+cross-feature user journeys and shared contracts against the assembled project before
+declaring the batch complete; isolated feature passes are insufficient.
 
-After writing all tests, verify they all pass. Update the Status column in the Coverage Map:
-
-| Status | Meaning |
-|--------|---------|
-| [TODO] | Not yet written |
-| [TESTING] | Written, not yet verified |
-| [PASS] | Passes |
-| [FAIL] | Fails - requires action |
-
-### 4. When Tests Fail
-
-A failing test means one of three things - determine which before acting:
-
-1. **Implementation bug** -> fix the code, re-verify
-2. **Test is wrong** -> fix the test logic, re-verify
-3. **Spec was ambiguous** -> stop and get user approval before changing approved requirements, then fix implementation or test accordingly
-
-Never mark a failing test as done without user approval. Every failing test against a spec criterion is a real defect.
-
----
-
-## Output: `test-report.md`
-
-Create `.specify/specs/NNN-feature-name/test-report.md`:
-
-```markdown
-# Test Report: [Feature Name]
-**Feature ID:** NNN-feature-name
-**Date:** YYYY-MM-DD
-**Result:** [PASS] ALL PASS / [FAIL] FAILURES REMAIN
-
-## Summary
-| Layer | Total | Passing | Failing |
-|-------|-------|---------|---------|
-| Unit | [N] | [N] | 0 |
-| Integration | [N] | [N] | 0 |
-| Acceptance | [N] | [N] | 0 |
-| **Total** | **[N]** | **[N]** | **0** |
-
-## Coverage Map
-
-| AC ID | Acceptance Criterion | Test Description | Layer | Result |
-|-------|---------------------|-----------------|-------|--------|
-| US-001 AC-1 | Valid credentials accepted | valid login succeeds | Integration | [PASS] |
-| US-001 AC-2 | Invalid password shows error | wrong password rejected | Integration | [PASS] |
-
-## Untested Criteria
-[List any acceptance criteria not covered by tests and the reason why]
-
-## Notes
-[Observations, edge cases found during testing, areas needing future attention]
-```
-
----
-
-## Gate
-
-Show the full `test-report.md` to the user, then output:
-
-```
----
-[If all tests pass:]
-
-[SUCCESS] Step 9 - Test complete  (Feature: NNN-feature-name)
-
-Output: Output: .specify/specs/NNN-feature-name/test-report.md
-   Tests: [N] passing / 0 failing
-   Coverage: [N] acceptance criteria verified
-
-[PASS] Feature NNN-feature-name is COMPLETE.
-   Every acceptance criterion in spec.md has a passing test.
-
-Updating epic.md -> marking NNN-feature-name as [PASS] Complete.
-
-Next:
-  - "continue" or "next" -> begin the next Feature (NNN) at Step 2
-  - "stop" -> pause here; say "continue from Feature NNN" to resume
----
-
-[If any tests fail:]
-
-[FAIL] Step 9 - Test incomplete  (Feature: NNN-feature-name)
-
-Output: Output: .specify/specs/NNN-feature-name/test-report.md
-   Tests: [N] passing / [M] failing
-
-The following acceptance criteria have failing tests:
-  - US-NNN AC-N: [criterion] -> [failure reason]
-
-The feature is NOT complete. Choose how to proceed:
-  - "fix [test ID]" -> investigate and fix that specific failure
-  - "fix all" -> work through all failures systematically
-  - "revise spec [AC ID]" -> the spec was ambiguous; update it first
-  - "stop" -> pause here; say "continue from Step 9" to resume
----
-```
-
-The Feature is only complete when `test-report.md` shows 0 failing tests and `epic.md` is updated to [PASS].
-
-## Final Explanation
-
-When the active requested scope is complete, create or update `.specify/final-explanation.md` in the user's language.
-
-- If this is a single Feature request, explain that Feature.
-- If this completes the last Feature in the project, explain the whole project.
-- If more Features remain, note the completed Feature and the next pending Feature, but do not claim the whole project is complete.
-
-Include:
-- What was completed
-- How to use or run it
-- Important project/module structure
-- Test result summary
-- Known limitations or deferred scope
-
-**Mode rule:** In detailed mode, wait at this final gate. In auto mode, stop here and report the final result before starting the next Feature. Do not begin another Feature without user direction.
+Auto and Detailed report the selected Feature's result without starting an unrequested Feature.
+Goal continues dependency-ready Features and finishes at the requested project boundary.
+Detailed explains the evidence and limitations more fully without an extra approval gate.
+At scope completion, follow
+[Completion](../SKILL.md#completion) to write `.specify/final-explanation.md` in the
+user's language. If blocked, report the exact remaining work honestly.
